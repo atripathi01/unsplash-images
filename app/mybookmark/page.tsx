@@ -1,0 +1,72 @@
+"use client"
+
+import { ImageData, Photo } from '@/api/types';
+import { BookmarkAdded, BookmarkBorderOutlined } from '@mui/icons-material';
+import { Container, Grid, Typography } from '@mui/material';
+import { styled } from '@stitches/react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react'
+
+const MyBookmark = () => {
+    const [bookmarkImages, setBookmarkImage]=useState<Photo[]>([]);
+    useEffect(()=>{
+     const arr:string | null=localStorage.getItem('myBookmark');
+     setBookmarkImage(JSON.parse(arr));
+    },[])
+    console.log(bookmarkImages)
+
+  return (
+   <main>
+    <Container sx={{position:"relative"}}>
+        <BackToHomePage> <a href='/'> back to home </a></BackToHomePage>
+        <Typography variant='h2' sx={{textAlign:'center',my:5}}>My Bookmarks</Typography>
+    <Grid container spacing={2}>
+          {bookmarkImages?.map((image: ImageData) => {
+            return (
+              <Grid
+                item
+                xs={12}
+                lg={4}
+                key={image?.id}
+                sx={{ position: 'relative' }}
+              >
+                <div>
+                    <ImageContainer>
+                    <Image
+                    width={350}
+                    height={200}
+                    src={image?.urls?.thumb}
+                    alt={image?.alt_description}
+                  />
+                    </ImageContainer>
+               
+                  {image?.alt_description}
+              
+                </div>
+              </Grid>
+            );
+          })}
+        </Grid>
+    </Container>
+   </main>
+  )
+}
+
+
+
+export default MyBookmark
+
+const ImageContainer = styled('div',{
+    width:"100%",
+    maxHeight:"300px",
+    overflow:'hidden'
+})
+const BackToHomePage = styled('div',{
+    position:"absolute",
+    top:'1rem',
+    left:"1rem",
+    textDecoration:"underline",
+    '&:hover':{
+      color:"blue"
+    }
+})
