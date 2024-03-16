@@ -20,7 +20,7 @@ const MyBookmark = () => {
       //@ts-ignore
       setBookmarkImage(JSON.parse(arr));
     }
-    
+
   }, []);
 
 
@@ -49,6 +49,7 @@ const MyBookmark = () => {
                     <Image
                       width={350}
                       height={200}
+                      //@ts-ignore
                       src={image?.urls?.thumb}
                       //@ts-ignore
                       alt={image?.alt_description}
