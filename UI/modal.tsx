@@ -7,6 +7,8 @@ interface CustomModalProps extends Omit<ModalProps, 'children' | 'open' | 'onClo
     handleClose: () => void;
     handleOpen?: () => void; // Optional prop
 }
+
+
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -14,10 +16,13 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    boxShadow: 2,
     p: 4,
   };
+
+
+
+
 const CustomModal: React.FC<CustomModalProps>  = ({children, handleClose, handleOpen,open}) => {
   return (
     <Modal
