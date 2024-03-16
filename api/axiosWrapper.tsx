@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 axios.defaults.baseURL = process.env.NEXT_APP_BASE_URL;
 
@@ -8,7 +8,7 @@ export type ResponseType<T = any> = {
 };
 
 export type RequestType<T> = {
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   url?: string;
   headers?: Record<string, string>;
   body?: T;
@@ -26,12 +26,13 @@ export const AxiosWrapper = async <T extends {}, K = Record<string, any>>(
     if (defaultHeaders)
       finalHeaders = {
         ...headers,
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       };
 
     axios({
-      method: method.toLowerCase(), 
+      //@ts-ignore
+      method: method.toLowerCase(),
       url,
       headers: finalHeaders,
       data: body,

@@ -1,6 +1,6 @@
 'use client';
 
-import { getImageList, getRendomImages } from '@/api/images_api';
+import { getImageList } from '@/api/images_api';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 // import debounce from 'lodash.debounce';
@@ -13,18 +13,21 @@ import {
   BookmarkBorderOutlined,
   Search,
 } from '@mui/icons-material';
-import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
-import CustomModal from '@/UI/modal';
 import MyPagination from '@/UI/pagination';
 
 export default function Home() {
   const [imageList, setImageList] = useState<ImageList>({});
   const [search, setSearch] = useState<string>('programmer with computer');
   const [bookmarkList, setBookmarkList] = useState<Photo[]>(
-    JSON.parse(localStorage.getItem('myBookmark')) || []
+    (typeof window !== 'undefined' &&
+      window.localStorage &&
+      //@ts-ignore
+      JSON.parse(localStorage.getItem('myBookmark'))) ||
+      []
   );
   const [isInputFocused, setIsInputFocused] = useState(false);
+  // open setopen state used for custom model, infeature if we need to impliment to show the complete detail of image
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -35,19 +38,26 @@ export default function Home() {
     setIsInputFocused(false);
   };
 
+  // fucntion useed to handle search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+
   // @ts-ignore
   //   const handleSearch = (e) => debounce(handleSearchValue(e), 800);
 
+  // useEffect only render whenever search value or curreent page will change
+  // fetch image list
+
   useEffect(() => {
     getImageList(search, currentPage)
+      //@ts-ignore
       .then((res) => setImageList(res))
       .catch((err) => console.log(err));
     console.log(imageList);
-  }, [search, currentPage]);
+  }, [search, currentPage]); // eslint-disable-line
 
+  // this function used to handle the users bookmarks image
   const handleSaveBookmark = (image: Photo) => {
     if (
       !bookmarkList.some((savedBookmark) => savedBookmark?.id === image?.id)
@@ -63,17 +73,21 @@ export default function Home() {
     }
   };
 
+  // this handles the page change for pagination
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   useEffect(() => {
-    if (bookmarkList && bookmarkList.length > 0) {
+    if (
+      bookmarkList &&
+      bookmarkList.length > 0 &&
+      typeof window !== 'undefined' &&
+      window.localStorage
+    ) {
       localStorage.setItem('myBookmark', JSON.stringify(bookmarkList));
     }
   }, [bookmarkList]);
-
-  console.log(bookmarkList);
 
   return (
     <main>
@@ -117,8 +131,11 @@ export default function Home() {
             </a>
           </Grid>
         </Grid>
-<Typography variant='h3' sx={{textAlign:"center",my:7}}>Unsplash Images</Typography>
+        <Typography variant='h3' sx={{ textAlign: 'center', my: 7 }}>
+          Unsplash Images
+        </Typography>
         <Grid container spacing={2}>
+          {/* @ts-ignore */}
           {imageList && imageList?.results?.length > 0 ? (
             imageList?.results?.map((image: ImageData) => {
               return (
@@ -132,11 +149,13 @@ export default function Home() {
                   sx={{ position: 'relative' }}
                 >
                   <div>
-                    <ImageContainer onClick={() => handleOpen(image)}>
+                    <ImageContainer>
                       <Image
                         width={800}
                         height={1000}
+                        //@ts-ignore
                         src={image?.urls?.thumb}
+                        //@ts-ignore
                         alt={image?.alt_description}
                       />
                     </ImageContainer>
@@ -192,6 +211,7 @@ export default function Home() {
         >
           <MyPagination
             currentPage={currentPage}
+            //@ts-ignore
             total={imageList?.total}
             handlePageChange={handlePageChange}
           />
