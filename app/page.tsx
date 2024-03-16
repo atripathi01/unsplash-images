@@ -54,7 +54,7 @@ export default function Home() {
       //@ts-ignore
       .then((res) => setImageList(res))
       .catch((err) => console.log(err));
-    console.log(imageList);
+
   }, [search, currentPage]); // eslint-disable-line
 
   // this function used to handle the users bookmarks image
